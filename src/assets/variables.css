@@ -2,6 +2,10 @@
     /* color config */
     --bodyBg: #EBEFF7;
 
+    --mainFontColor: #0a2540;
+    --lightFontColor: #1a4d7e;
+    
+
     --borderColor: #CDCDCF;
     
     --emphasizeFrontColor: #ffffff;
@@ -12,8 +16,8 @@
 
     /* size config */
 
-    --menuHeight: 25px;
-    --chatHeight: 30px;
+    --menuHeight: 40px;
+    --chatHeight: 44px;
 
     --borderWidth: 0.5px;
 

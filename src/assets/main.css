@@ -3,7 +3,8 @@
 
 html {
     box-sizing: border-box;
-    line-height: 1;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
 }
 
 *,
@@ -22,6 +23,7 @@ body {
     height: 100%;
     background-color: var(--bodyBg);
     font-size: var(--bodyFontsize);
+    color: var(--mainFontColor);
 }
 
 @media screen and (min-width: 759px) {
