@@ -1,0 +1,22 @@
+:root{
+    /* color config */
+    --bodyBg: #EBEFF7;
+
+    --borderColor: #CDCDCF;
+    
+    --emphasizeFrontColor: #ffffff;
+    --emphasizeColor: #0068FF;
+    
+    --strongColor: #FF5544;
+    
+
+    /* size config */
+
+    --borderWidth: 0.5px;
+
+    --bodyFontsize: 14px;
+    --titleFontsize: 16px;
+    --specFontsize: 13px;
+    --tinyFontsize: 12px;
+
+}

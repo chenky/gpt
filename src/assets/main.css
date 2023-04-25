@@ -1,0 +1,30 @@
+@import './variables.css';
+@import './reset.css';
+
+html {
+    box-sizing: border-box;
+    line-height: 1;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+.app {
+    padding: calc(env(safe-area-inset-top)) calc(env(safe-area-inset-right)) calc(env(safe-area-inset-bottom)) calc(env(safe-area-inset-left));
+    height: 100%;
+    background-color: var(--bodyBg);
+    font-size: var(--bodyFontsize);
+}
+
+@media screen and (min-width: 759px) {
+    :root {
+    }
+}

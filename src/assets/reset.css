@@ -1,0 +1,98 @@
+/* Clear inner and outer margins. 清除内外边距 */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+p,
+blockquote,
+/* structural elements 结构元素 */
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+/* list elements 列表元素 */
+pre,
+/* text formatting elements 文本格式元素 */
+fieldset,
+legend,
+button,
+input,
+textarea,
+/* form elements 表单元素 */
+th,
+td {
+  /* table elements 表格元素 */
+  margin: 0;
+  padding: 0;
+}
+
+/* Set default font family 设置默认字体 */
+html > body,
+button,
+input,
+select,
+textarea {
+  /* Mac default: Helvetica STXihei '华文细黑' */
+  /* Win default: Tahoma 'Microsoft YaHei' '微软雅黑' */
+  /* Arial: both systems in common English. 为两个系统英文通用 */
+  /* Heiti '黑体': base for Mac Mac. Mac 保底 */
+  /* SimSun '宋体' base for Win, mainly for XP. Win 保底，主要用于 XP  */
+  /* sans-serif: use when lose all font family. 所有字体缺失时使用  */
+  /* PingFangSC-Regular: default font family in this project. 本项目默认字体 */
+  font-family: PingFangSC-Regular, Helvetica, Tahoma, Arial, STXihei, '华文细黑', Heiti, '黑体',
+    'Microsoft YaHei', '微软雅黑', SimSun, '宋体', sans-serif;
+}
+
+/* Upright Italics. 将斜体扶正 */
+address,
+cite,
+dfn,
+em,
+var {
+  font-style: normal;
+}
+
+/* Reset list element 重置列表元素 */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Reset text style element 重置文本格式元素 */
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* Reset form elements 重置表单元素 */
+legend {
+  color: #000;
+}
+
+/* for ie6 */
+/* Make the img in the link borderless. 让链接里的 img 无边框 */
+fieldset,
+img {
+  border: none;
+}
+
+/* Rest tabel element. 重置表格元素 */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Reset hr */
+hr {
+  border: none;
+  height: 1px;
+}

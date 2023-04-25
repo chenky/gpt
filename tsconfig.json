@@ -1,0 +1,22 @@
+{
+    "extends": "@vue/tsconfig/tsconfig.web.json",
+    "include": [
+        "src/**/*",
+        "src/**/*.vue"
+    ],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "lib": ["DOM", "DOM.Iterable", "ES2016", "ES2018.Promise"],
+        // "types": ["vue/ref-macros"],
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ]
+        }
+    },
+    "references": [
+        {
+            "path": "./tsconfig.config.json"
+        }
+    ]
+}
