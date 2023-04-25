@@ -1,4 +1,5 @@
 import { createApp, markRaw } from 'vue'
+// import { ConfigProvider } from 'vant';
 import { createPinia } from 'pinia'
 
 import App from './App.vue'
@@ -12,7 +13,7 @@ const pinia = createPinia()
 pinia.use(({ store }) => {
     store.$router = markRaw(router)
 })
-
+// app.use(ConfigProvider)
 app.use(pinia)
 app.use(router)
 
