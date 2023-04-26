@@ -24,7 +24,7 @@
         </div>
         <div class="recharge_tip">
             免费额度已经用完，充值可无限畅聊，点击
-            <van-button type="primary">充值</van-button>
+            <van-button type="primary">升级VIP</van-button>
         </div>
         <footer>
             <van-field v-model="text" placeholder="请输入..." label="" />
