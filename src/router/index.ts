@@ -13,12 +13,13 @@ const router = createRouter({
             path: '/account',
             name: 'account',
             component: () => import('../views/Account.vue')
-        },
-        {
-            path: '/recharge_record',
-            name: 'recharge_record',
-            component: () => import('../views/RechargeRecord.vue')
         }
+        // ,
+        // {
+        //     path: '/recharge_record',
+        //     name: 'recharge_record',
+        //     component: () => import('../views/RechargeRecord.vue')
+        // }
     ]
 })
 

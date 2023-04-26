@@ -1,35 +1,33 @@
 <template>
-    <div>
-        <header>
-            <h5>会员套餐</h5>
-        </header>
+    <div class="recharge">
+        <h5>会员套餐</h5>
         <van-radio-group v-model="checked">
-  <van-cell-group inset>
-    <van-cell title="180天(¥99)" clickable @click="checked = cVIP_PACK[1]">
-      <template #right-icon>
-        <van-radio :name="cVIP_PACK[1]" />
-      </template>
-    </van-cell>
-    <van-cell title="90天(¥19.9)" clickable @click="checked = cVIP_PACK[2]">
-      <template #right-icon>
-        <van-radio :name="cVIP_PACK[2]" />
-      </template>
-    </van-cell>
-    <van-cell title="30天(¥9.9)" clickable @click="checked = cVIP_PACK[3]">
-      <template #right-icon>
-        <van-radio :name="cVIP_PACK[3]" />
-      </template>
-    </van-cell>
-  </van-cell-group>
-</van-radio-group>
-<van-button type="primary">立即支付</van-button>
-<footer>
-    <h5>充值说明</h5>
-    <p>1. 充值说明充值说明充值说明充值说明充值说明充值说明充值说明</p>
-    <p>2. 充值说明充值说明充值说明充值说明充值说明充值说明充值说明</p>
-    <p>3. 充值说明充值说明充值说明充值说明充值说明充值说明充值说明</p>
-    <p>4. 充值说明充值说明充值说明充值说明充值说明充值说明充值说明</p>
-</footer>
+            <van-cell-group inset>
+                <van-cell title="180天(¥99)" clickable @click="checked = cVIP_PACK[1]">
+                    <template #right-icon>
+                        <van-radio :name="cVIP_PACK[1]" />
+                    </template>
+                </van-cell>
+                <van-cell title="90天(¥19.9)" clickable @click="checked = cVIP_PACK[2]">
+                    <template #right-icon>
+                        <van-radio :name="cVIP_PACK[2]" />
+                    </template>
+                </van-cell>
+                <van-cell title="30天(¥9.9)" clickable @click="checked = cVIP_PACK[3]">
+                    <template #right-icon>
+                        <van-radio :name="cVIP_PACK[3]" />
+                    </template>
+                </van-cell>
+            </van-cell-group>
+        </van-radio-group>
+        <van-button type="primary">立即支付</van-button>
+        <div class="footer">
+            <h5>充值说明</h5>
+            <p>1. 充值说明充值说明充值说明充值说明充值说明充值说明充值说明</p>
+            <p>2. 充值说明充值说明充值说明充值说明充值说明充值说明充值说明</p>
+            <p>3. 充值说明充值说明充值说明充值说明充值说明充值说明充值说明</p>
+            <p>4. 充值说明充值说明充值说明充值说明充值说明充值说明充值说明</p>
+        </div>
     </div>
 </template>
 
@@ -44,4 +42,42 @@ const checked = ref(VIP_PACK[1])
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.recharge {
+    padding: 20px 20px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.recharge h5 {
+    font-size: var(--titleFontsize);
+    margin: 10px 0 20px;
+}
+
+.recharge:deep(.van-radio-group) {
+    background-color: var(--bodyBg);
+    border-radius: 6px;
+}
+
+.recharge:deep(.van-cell-group) {
+    margin: 0;
+    background-color: transparent;
+}
+
+.recharge:deep(.van-cell) {
+    background-color: transparent;
+}
+
+.recharge:deep(.van-cell:after) {
+    border-bottom-color: var(--borderColor);
+}
+
+.recharge:deep(.van-button) {
+    margin: 30px 0 20px;
+}
+
+.recharge .footer p {
+    font-size: var(--tinyFontsize);
+    color: var(--lightFontColor);
+}
+</style>
