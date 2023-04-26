@@ -3,17 +3,34 @@
         <h5>会员套餐</h5>
         <van-radio-group v-model="checked">
             <van-cell-group inset>
-                <van-cell title="180天(¥99)" clickable @click="checked = cVIP_PACK[1]">
+                <van-cell clickable @click="checked = cVIP_PACK[1]">
+                    <template #title>
+                        <span class="duration">180天</span>
+                        <span class="price">(¥99)</span>
+                    </template>
                     <template #right-icon>
                         <van-radio :name="cVIP_PACK[1]" />
                     </template>
                 </van-cell>
-                <van-cell title="90天(¥19.9)" clickable @click="checked = cVIP_PACK[2]">
+                <van-cell clickable @click="checked = cVIP_PACK[2]">
+                    <template #title>
+                        <span class="duration">30天</span>
+                        <span class="price">(¥19.9)</span>
+                    </template>
                     <template #right-icon>
                         <van-radio :name="cVIP_PACK[2]" />
                     </template>
                 </van-cell>
-                <van-cell title="30天(¥9.9)" clickable @click="checked = cVIP_PACK[3]">
+                <van-cell clickable @click="checked = cVIP_PACK[3]">
+                    <template #title>
+                        <!-- <van-badge content="首次特惠">
+                            <span class="duration">30天</span>
+                            <span class="price">(¥9.9)</span>
+                        </van-badge> -->
+                        <span class="duration">30天</span>
+                        <span class="price">(¥9.9)</span>
+                        <van-tag type="danger">首次特惠</van-tag>
+                    </template>
                     <template #right-icon>
                         <van-radio :name="cVIP_PACK[3]" />
                     </template>
@@ -55,7 +72,7 @@ const checked = ref(VIP_PACK[1])
 }
 
 .recharge:deep(.van-radio-group) {
-    background-color: var(--bodyBg);
+    background-color: var(--aiChatBg);
     border-radius: 6px;
 }
 
@@ -66,6 +83,11 @@ const checked = ref(VIP_PACK[1])
 
 .recharge:deep(.van-cell) {
     background-color: transparent;
+}
+
+.recharge .price {
+    margin: 0 10px;
+    color: var(--lightFontColor);
 }
 
 .recharge:deep(.van-cell:after) {

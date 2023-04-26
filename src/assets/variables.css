@@ -1,29 +1,45 @@
 :root{
     /* color config */
-    --bodyBg: #EBEFF7;
+    --bodyBg: #fff;
 
-    --mainFontColor: #0a2540;
-    --lightFontColor: #425466;
-    
+    --mainFontColor: #343541;
+    --subMainColor: #000000;
+    --lightFontColor: #8e8ea0;
 
-    --borderColor: #CDCDCF;
+    --menuColor: #ececf1;
+
+    --headerBg: #343541;
+    --headerColor: #d9d9e3;
+
+    --aiChatColor: #374151;
+    --aiChatBg: #f7f7f8;
+
+    --borderColor: rgba(0, 0, 0, 0.1);
+
+    --primaryBtnBg: #10a37f;
     
-    --emphasizeFrontColor: #ffffff;
-    --emphasizeColor: #0068FF;
-    
-    --strongColor: #FF5544;
+    --errorFontColor: #565869;
+    --errorBg: #ef44441a;
+    --errorBorderColor: #ef4444;
+
+    /* --strongColor: #FF5544; */
     
 
     /* size config */
 
     --menuHeight: 40px;
-    --chatHeight: 44px;
+    --chatHeight: 70px;
+
+    --iconAvatarWidth: 24px;
+    --iconAvatarHeight: 22px;
+    --iconAvatarWrapWidth: 30px;
+    --iconAvatarWrapHeight: 30px;
 
     --borderWidth: 0.5px;
 
     --bodyFontsize: 14px;
     --titleFontsize: 16px;
-    --specFontsize: 13px;
+    /* --specFontsize: 13px; */
     --tinyFontsize: 12px;
 
 }

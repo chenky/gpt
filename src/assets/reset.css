@@ -45,8 +45,9 @@ textarea {
   /* SimSun '宋体' base for Win, mainly for XP. Win 保底，主要用于 XP  */
   /* sans-serif: use when lose all font family. 所有字体缺失时使用  */
   /* PingFangSC-Regular: default font family in this project. 本项目默认字体 */
-  font-family: PingFangSC-Regular, Helvetica, Tahoma, Arial, STXihei, '华文细黑', Heiti, '黑体',
-    'Microsoft YaHei', '微软雅黑', SimSun, '宋体', sans-serif;
+  /* font-family: PingFangSC-Regular, Helvetica, Tahoma, Arial, STXihei, '华文细黑', Heiti, '黑体',
+    'Microsoft YaHei', '微软雅黑', SimSun, '宋体', sans-serif; */
+    font-family: Söhne,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,Helvetica Neue,Arial,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
 }
 
 /* Upright Italics. 将斜体扶正 */

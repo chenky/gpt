@@ -51,11 +51,11 @@ const upgradeVip = () => {
 <style scoped>
 .account {
     height: 100%;
-    background-color: var(--emphasizeFrontColor);
+    background-color: var(--bodyBg);
 }
 
 .account header {
-    background-color: var(--bodyBg);
+    background-color: var(--aiChatBg);
     display: flex;
     align-items: center;
     flex-direction: column;

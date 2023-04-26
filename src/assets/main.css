@@ -3,8 +3,8 @@
 
 html {
     box-sizing: border-box;
-    line-height: 1.4;
-    letter-spacing: 0.5px;
+    line-height: 1.5;
+    letter-spacing: normal;
 }
 
 *,
@@ -24,6 +24,12 @@ body {
     background-color: var(--bodyBg);
     font-size: var(--bodyFontsize);
     color: var(--mainFontColor);
+}
+
+/* reset vant button */
+.van-button--primary{
+    background: var(--primaryBtnBg);
+    border-color: var(----primaryBtnBg);
 }
 
 @media screen and (min-width: 759px) {
