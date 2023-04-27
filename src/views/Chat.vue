@@ -17,10 +17,12 @@
                 <van-image class="icon_avatar icon_user_avatar" v-if="index % 2 === 0"
                     src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
                 <div class="chat_text" v-html="chat"></div>
+                <icon_copy class="copy" :msg="chat" v-if="index % 2 !== 0"></icon_copy>
             </div>
             <div class="chat_item chat_ai_item">
                 <icon_aichat class="icon_avatar icon_ai_avatar"></icon_aichat>
                 <div class="chat_text" v-html="lastAIchat"></div>
+                <icon_copy class="copy" :msg="lastAIchat"></icon_copy>
             </div>
         </div>
         <div class="recharge_tip">
@@ -51,6 +53,7 @@ import {
     ref, reactive
 } from 'vue'
 import icon_aichat from '@/assets/icon/icon_aichat.vue'
+import icon_copy from '@/assets/icon/icon_copy.vue'
 import Recharge from '@/components/Recharge.vue'
 
 const menu = ref(false)
@@ -166,12 +169,13 @@ const send = () => {
     border-right: none;
 }
 
-.chat_ai_item>.chat_text {
+.chat_text {
     margin-left: 10px;
+    flex: 1;
 }
 
-.chat_user_item>.chat_text {
-    margin-left: 10px;
+.copy {
+    margin-left: 15px;
 }
 
 .recharge_tip {

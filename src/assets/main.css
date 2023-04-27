@@ -31,6 +31,10 @@ body {
     background: var(--primaryBtnBg);
     border-color: var(----primaryBtnBg);
 }
+/* .van-toast--text{
+    background: var(--headerBg);
+    color: var(--bodyBg);
+} */
 
 @media screen and (min-width: 759px) {
     :root {

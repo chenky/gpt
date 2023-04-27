@@ -13,10 +13,30 @@
                 <div class="info_item">
                     <label>到期日：</label><span>2023.4.1</span>
                 </div>
+                <div class="info_item">
+                    套餐即将到期请尽快<van-button type="primary" @click="upgradeVip">续费</van-button>
+                </div>
             </template>
-            <!-- <div class="info_item">
-                <label>剩余次数：</label><span>30次</span>
-            </div> -->
+            <template v-if="true">
+                <div class="info_item">
+                    您的套餐已过期
+                </div>
+                <div class="info_item">
+                    <label>最近订阅套餐到期时间：</label><span>2023.4.1</span>
+                </div>
+                <div class="info_item">
+                    请尽快<van-button type="primary" @click="upgradeVip">开通套餐</van-button>享无限畅聊
+                </div>
+            </template>
+            <template v-if="true">
+                <div class="info_item">
+                    <label>剩余次数：</label><span>30次</span>
+                </div>
+                <div class="info_item">
+                    <van-button type="primary" @click="upgradeVip">开通套餐</van-button>无限畅聊
+                </div>
+            </template>
+
             <!-- </div> -->
 
         </header>
@@ -71,6 +91,13 @@ const upgradeVip = () => {
 
 .info_item {
     margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info_item:deep(.van-button) {
+    margin: 0 5px;
 }
 
 .account footer {

@@ -1,7 +1,7 @@
 import { createApp, markRaw } from 'vue'
 // import { ConfigProvider } from 'vant';
 import { createPinia } from 'pinia'
-
+import clipboardDirective from './directives/clipboard'
 import App from './App.vue'
 import router from './router'
 
@@ -14,6 +14,8 @@ pinia.use(({ store }) => {
     store.$router = markRaw(router)
 })
 // app.use(ConfigProvider)
+
+app.directive('clipboard', clipboardDirective)
 app.use(pinia)
 app.use(router)
 
