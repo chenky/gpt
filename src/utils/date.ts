@@ -111,7 +111,7 @@ export function getLastDays (days = 1, format = 'MM.dd') {
 
 export function about2Expire (endTime: number) {
     const now = new Date().valueOf()
-    return endTime - now > (10 * 24 * 60 * 60 * 1000) ? false : true;
+    return endTime - now > (about2expire_duration * 24 * 60 * 60 * 1000) ? false : true;
 }
 
 export function outOfDate (endTime: number) {

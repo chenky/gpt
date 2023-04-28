@@ -1,21 +1,11 @@
 import { defineStore } from 'pinia'
-import { getUserInfo, recharge } from '@/service/index'
+import { postMsg } from '@/service/index'
 import { about2Expire, outOfDate, dateFormatter } from '@/utils/date'
-import { VIP_PACK_MAP } from '@/utils/const'
 import { setStateByStateKey, setStateByDataKey } from '@/utils/common'
-import type { memberTypeKeys, Obj } from '@/types/common'
 
-interface IUserInfo {
-    uid: string,
-    recharged: number,
-    memberType: memberTypeKeys,
-    balance: number,
-    startTime: number,
-    endTime: number
-}
 
-export const useUserInfo = defineStore('userInfo', {
-    state: (): IUserInfo => ({
+export const useChat = defineStore('chat', {
+    state: () => ({
         uid: '', // 微信id
         recharged: 1, // 0：没有充值过，首次充值，1: 充值过了
         memberType: "0", // 0: 非会员， 1: 套餐一180天会员， 2: 30天会员  3: 30优惠会员

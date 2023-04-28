@@ -11,4 +11,3 @@ interface Obj {
 
 
 type memberTypeKeys = keyof typeof VIP_PACK_MAP
-type memberTypeValues = VIP_PACK_MAP[keys]

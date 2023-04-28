@@ -42,9 +42,7 @@
                 </van-button>
             </div>
         </footer>
-        <van-popup v-model:show="showRecharge" round position="bottom" :style="{ height: '80%' }">
-            <Recharge></Recharge>
-        </van-popup>
+        <RechargeDialog v-model:visible="showRecharge"></RechargeDialog>
     </div>
 </template>
 
@@ -54,7 +52,7 @@ import {
 } from 'vue'
 import icon_aichat from '@/assets/icon/icon_aichat.vue'
 import icon_copy from '@/assets/icon/icon_copy.vue'
-import Recharge from '@/components/Recharge.vue'
+import RechargeDialog from '@/components/RechargeDialog.vue'
 
 const menu = ref(false)
 const text = ref('')

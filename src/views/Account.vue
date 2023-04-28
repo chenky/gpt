@@ -50,9 +50,7 @@
             <div>联系客服</div>
             <van-image width="100" height="100" src="https://upload.jianshu.io/images/js-qrc.png" />
         </footer>
-        <van-popup v-model:show="showRecharge" round position="bottom" :style="{ height: '80%' }">
-            <Recharge></Recharge>
-        </van-popup>
+        <RechargeDialog v-model:visible="showRecharge"></RechargeDialog>
     </div>
 </template>
 
@@ -60,7 +58,7 @@
 import {
     ref
 } from 'vue'
-import Recharge from '@/components/Recharge.vue'
+import RechargeDialog from '@/components/RechargeDialog.vue'
 import { useUserInfo } from '@/stores/userInfo'
 
 const userInfo = useUserInfo()

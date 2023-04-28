@@ -23,7 +23,7 @@ export function postMsg (uid: string, prompt: string) {
 }
 
 // 充值成为vip会员
-export function recharge (uid: string, memberType: string) {
+export function recharge (uid: string, memberType: memberTypeKeys) {
     return post({
         url: '/ask_chatgpt',
         data: { uid, memberType }
