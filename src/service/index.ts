@@ -1,3 +1,4 @@
+import type { memberTypeKeys } from '@/types/common';
 import { get, post } from '@/utils/request'
 import type { AxiosRequestConfigPlus } from 'axios';
 
@@ -14,17 +15,17 @@ export function getUserInfo (uid = '') {
     return get(config)
 }
 
-export function postMsg ({uid, prompt}) {
+export function postMsg (uid: string, prompt: string) {
     return post({
         url: '/ask_chatgpt',
-        data: {uid, prompt}
+        data: { uid, prompt }
     })
 }
 
 // 充值成为vip会员
-export function recharge ({uid, vipPack}) {
+export function recharge (uid: string, memberType: string) {
     return post({
         url: '/ask_chatgpt',
-        data: {uid, vipPack}
+        data: { uid, memberType }
     })
 }

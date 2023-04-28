@@ -23,10 +23,6 @@
                 </van-cell>
                 <van-cell clickable @click="checked = cVIP_PACK[3]">
                     <template #title>
-                        <!-- <van-badge content="首次特惠">
-                            <span class="duration">30天</span>
-                            <span class="price">(¥9.9)</span>
-                        </van-badge> -->
                         <span class="duration">30天</span>
                         <span class="price">(¥9.9)</span>
                         <van-tag type="danger">首次特惠</van-tag>
@@ -37,7 +33,7 @@
                 </van-cell>
             </van-cell-group>
         </van-radio-group>
-        <van-button type="primary">立即支付</van-button>
+        <van-button type="primary" @click="pay">立即支付</van-button>
         <div class="footer">
             <h5>充值说明</h5>
             <p>1. 充值说明充值说明充值说明充值说明充值说明充值说明充值说明</p>
@@ -53,9 +49,18 @@ import {
     ref, reactive
 } from 'vue'
 import { VIP_PACK } from "@/utils/const"
+import type { memberTypeKeys } from '@/types/common';
+import { useUserInfo } from '@/stores/userInfo'
+
+const userInfo = useUserInfo()
 
 const cVIP_PACK = VIP_PACK
 const checked = ref(VIP_PACK[1])
+
+const pay = () => {
+    userInfo.recharge()
+}
+
 
 </script>
 

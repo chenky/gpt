@@ -1,16 +1,49 @@
 import { defineStore } from 'pinia'
-import { getUserInfo } from '@/service/index'
+import { getUserInfo, recharge } from '@/service/index'
+import { about2Expire, outOfDate, dateFormatter } from '@/utils/date'
+import { VIP_PACK_MAP } from '@/utils/const'
+import { setStateProp } from '@/utils/common'
+import type { memberTypeKeys } from '@/types/common'
+
+interface IUserInfo {
+    uid: string,
+    memberType: memberTypeKeys,
+    balance: number,
+    startTime: number,
+    endTime: number
+}
 
 export const useUserInfo = defineStore('userInfo', {
     state: () => ({
         uid: '', // 微信id
-        vipPack: 1, // 1: 180天， 2: 30天， 3: 30优惠会员
-        isVip: 0, // 0: 不是vip， 1： 是会员
-        expirate: 0, // 0: 过期， 1： 没有过期
+        // vipPack: 1, // 1: 180天， 2: 30天， 3: 30优惠会员
+        // isVip: 0, // 0: 不是vip， 1： 是会员
+        memberType: "0", // 0: 非会员， 1: 套餐一180天会员， 2: 30天会员  3: 30优惠会员
         balance: 9, // -1: 无限畅聊，其他次数就是具体次数 
-        startTime: '2023.3.1', // 套餐开始时间
-        endTime: '2023.4.1'  // 套餐到期时间
+        startTime: 1682667170087, // 套餐开始时间 后台返回原始时间，前端格式化
+        endTime: 1682667170087 // 套餐到期时间
     }),
+
+    getters: {
+        memberTypeName: (state) => {
+            return VIP_PACK_MAP[state.memberType in VIP_PACK_MAP]
+        },
+        isVip: (state) => {
+            return state.memberType !== "0"
+        },
+        isAbout2Expire: (state) => {
+            return about2Expire(state.endTime)
+        },
+        isOutOfDate: (state) => {
+            return outOfDate(state.endTime)
+        },
+        formatStartTime: (state) => {
+            return dateFormatter(state.startTime)
+        },
+        formatEndTime: (state) => {
+            return dateFormatter(state.endTime)
+        }
+    },
 
     actions: {
         /**
@@ -18,27 +51,16 @@ export const useUserInfo = defineStore('userInfo', {
          * 获取支付信息
          * @param uid
          */
-        userInfo (uid) {
-            return getUserInfo(postData)
-                // .then(data => {
-                //     console.log('submitCreditcardPay data: ', data)
-                // })
-
-                .catch((errData) => {
-                    // const router = useRouter()
-                    let errMsg = ''
-                    const { errors, transferErrorMsg } = errData
-                    // http status not 200 then error is errors
-                    // else error is transferErrorMsg
-                    if (errors && Array.isArray(errors)) {
-                        errMsg = JSON.parse(errors[0]?.errorMessage || "{}")?.transferErrorMsg
-                    } else {
-                        errMsg = transferErrorMsg
-                    }
-                    // this.reason = errMsg
-                    this.$router.push({ name: 'payfail', query: { reason: errMsg } })
-                    return Promise.reject(errMsg)
+        userInfo (uid: string) {
+            return getUserInfo(uid)
+                .then(data => {
+                    setStateProp(this.$state, data)
                 })
+        },
+        recharge (memberType: string) {
+            return recharge(this.uid, memberType).then(data => {
+                setStateProp(this.$state, data)
+            })
         }
     }
 })

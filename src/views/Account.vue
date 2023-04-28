@@ -3,34 +3,36 @@
         <header>
             <van-image round src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
             <!-- <div class="info"> -->
-            <template v-if="true">
-                <div class="info_item">
-                    <label>订阅套餐：</label><span>30天首次体验</span>
-                </div>
-                <div class="info_item">
-                    <label>订阅时间：</label><span>2023.3.1</span>
-                </div>
-                <div class="info_item">
-                    <label>到期日：</label><span>2023.4.1</span>
-                </div>
-                <div class="info_item">
-                    套餐即将到期请尽快<van-button type="primary" @click="upgradeVip">续费</van-button>
-                </div>
+            <template v-if="userInfo.isVip">
+                <template v-if="userInfo.isOutOfDate">
+                    <div class="info_item">
+                        您的套餐已过期
+                    </div>
+                    <div class="info_item">
+                        <label>最近订阅套餐到期时间：</label><span>{{ userInfo.formatEndTime }}</span>
+                    </div>
+                    <div class="info_item">
+                        请尽快<van-button type="primary" @click="upgradeVip">开通套餐</van-button>享无限畅聊
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="info_item">
+                        <label>订阅套餐：</label><span>{{ userInfo.memberTypeName }}</span>
+                    </div>
+                    <div class="info_item">
+                        <label>订阅时间：</label><span>{{ userInfo.formatStartTime }}</span>
+                    </div>
+                    <div class="info_item">
+                        <label>到期日：</label><span>{{ userInfo.formatEndTime }}</span>
+                    </div>
+                    <div v-if="userInfo.isAbout2Expire" class="info_item">
+                        套餐即将到期请尽快<van-button type="primary" @click="upgradeVip">续费</van-button>
+                    </div>
+                </template>
             </template>
-            <template v-if="true">
+            <template v-else>
                 <div class="info_item">
-                    您的套餐已过期
-                </div>
-                <div class="info_item">
-                    <label>最近订阅套餐到期时间：</label><span>2023.4.1</span>
-                </div>
-                <div class="info_item">
-                    请尽快<van-button type="primary" @click="upgradeVip">开通套餐</van-button>享无限畅聊
-                </div>
-            </template>
-            <template v-if="true">
-                <div class="info_item">
-                    <label>剩余次数：</label><span>30次</span>
+                    <label>剩余次数：</label><span>{{ userInfo.balance }}次</span>
                 </div>
                 <div class="info_item">
                     <van-button type="primary" @click="upgradeVip">开通套餐</van-button>无限畅聊
@@ -59,6 +61,9 @@ import {
     ref
 } from 'vue'
 import Recharge from '@/components/Recharge.vue'
+import { useUserInfo } from '@/stores/userInfo'
+
+const userInfo = useUserInfo()
 
 const showRecharge = ref(false)
 const upgradeVip = () => {

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { formatDate } from './const'
+import { formatDate, about2expire_duration } from './const'
 
 /**
  * @desc 格式化日期
@@ -107,4 +107,14 @@ export function getLastDays (days = 1, format = 'MM.dd') {
         retDays.push(getDiffDate('day', -index, format))
     }
     return retDays
+}
+
+export function about2Expire (endTime: number) {
+    const now = new Date().valueOf()
+    return endTime - now > (10 * 24 * 60 * 60 * 1000) ? false : true;
+}
+
+export function outOfDate (endTime: number) {
+    const now = new Date().valueOf()
+    return endTime > now ? false : true
 }
