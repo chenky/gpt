@@ -63,7 +63,7 @@ export const useUserInfo = defineStore('userInfo', {
                 return data
             })
         },
-        updateProps (data: Obj) {
+        setState (data: Obj) {
             setStateByDataKey(this.$state, data);
         }
     }

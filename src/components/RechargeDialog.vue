@@ -53,7 +53,6 @@ import {
 import { VIP_PACK } from "@/utils/const"
 import type { memberTypeKeys } from '@/types/common';
 import { showToast } from 'vant';
-import 'vant/es/toast/style';
 import { useUserInfo } from '@/stores/userInfo'
 
 defineProps(['visible'])
@@ -82,18 +81,18 @@ const pay = () => {
 
     // console.log(checked.value, 'aaaddf')
 
-    // if (loading.value) return true;
-    // loading.value = true
-    // userInfo.recharge(checked.value as memberTypeKeys)
-    //     .then((data) => {
-    //         showToast({ message: '支付成功', duration: 500 });
-    //         emit('update:visible', false)
-    //     })
-    //     .catch((err) => {
-    //         showToast({ message: '支付出错了，请重新支付！', duration: 500 });
-    //     }).finally(() => {
-    //         loading.value = false
-    //     })
+    if (loading.value) return true;
+    loading.value = true
+    userInfo.recharge(checked.value as memberTypeKeys)
+        .then((data) => {
+            showToast({ message: '支付成功', duration: 500 });
+            emit('update:visible', false)
+        })
+        .catch((err) => {
+            showToast({ message: '支付出错了，请重新支付！', duration: 500 });
+        }).finally(() => {
+            loading.value = false
+        })
 }
 
 

@@ -9,8 +9,8 @@
                 </van-cell-group>
             </van-popup>
         </header>
-        <div class="free_tip">有10次免费提问</div>
-        <div class="content">
+        <!-- <div class="free_tip">有10次免费提问</div> -->
+        <div v-if="enableChat" class="content">
             <div :class="{ chat_item: true, chat_ai_item: index % 2 !== 0, chat_user_item: index % 2 === 0 }"
                 v-for="(chat, index) in chats">
                 <icon_aichat class="icon_avatar icon_ai_avatar" v-if="index % 2 !== 0"></icon_aichat>
@@ -19,20 +19,25 @@
                 <div class="chat_text" v-html="chat"></div>
                 <icon_copy class="copy" :msg="chat" v-if="index % 2 !== 0"></icon_copy>
             </div>
-            <div class="chat_item chat_ai_item">
+            <div v-if="lastAIchat" class="chat_item chat_ai_item">
                 <icon_aichat class="icon_avatar icon_ai_avatar"></icon_aichat>
                 <div class="chat_text" v-html="lastAIchat"></div>
-                <icon_copy class="copy" :msg="lastAIchat"></icon_copy>
+                <!-- <icon_copy class="copy" :msg="lastAIchat"></icon_copy> -->
             </div>
         </div>
-        <div class="recharge_tip">
-            免费额度已经用完，充值可无限畅聊，点击
+        <div v-if="outOfDate" class="recharge_tip">
+            会员套餐已经过期，到期日期为: {{ userInfo.formatEndTime }},单击
+            <van-button type="primary" @click="upgradeVip">续费</van-button>
+        </div>
+        <div v-if="insufficientBalance" class="recharge_tip">
+            10条免费额度已经用完，充值可无限畅聊，点击
             <van-button type="primary" @click="upgradeVip">升级VIP</van-button>
         </div>
         <footer>
             <div class="msg_input">
-                <van-field v-model="text" placeholder="请输入..." label="" />
-                <van-button class="send_msg" @click="send">
+                <van-field v-model="prompt" :disabled="!enableChat" placeholder="请输入..." label="" />
+                <van-button class="send_msg" :loading="loading" :disabled="!enableChat || loading || !prompt"
+                    @click="postMsg">
                     <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
                         stroke-linejoin="round" class="h-4 w-4 mr-1" height="1em" width="1em"
                         xmlns="http://www.w3.org/2000/svg">
@@ -50,15 +55,69 @@
 import {
     ref, reactive
 } from 'vue'
+import { showToast } from 'vant';
 import icon_aichat from '@/assets/icon/icon_aichat.vue'
 import icon_copy from '@/assets/icon/icon_copy.vue'
 import RechargeDialog from '@/components/RechargeDialog.vue'
+import { useUserInfo } from '@/stores/userInfo'
 
+const userInfo = useUserInfo()
 const menu = ref(false)
-const text = ref('')
-const chats = reactive(['股市涨跌了吗', '对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌', '东方财富未来估计是多少呢？不要含糊其辞说套话，给一个具体价格,糊其辞说套话，给一个具体价格,糊其辞说套话，给一个具体价格', '抱歉真的无法预测', '预测一下吗'])
-const lastAIchat = ref('真的吗')
+const prompt = ref('')
+// const chats = reactive(['股市涨跌了吗', '对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌', '东方财富未来估计是多少呢？不要含糊其辞说套话，给一个具体价格,糊其辞说套话，给一个具体价格,糊其辞说套话，给一个具体价格', '抱歉真的无法预测', '预测一下吗'])
+// const lastAIchat = ref('好点的呀')
+const chats: Array<string> = reactive([])
+const lastAIchat = ref('')
 const showRecharge = ref(false)
+const loading = ref(false)
+
+const outOfDate = ref(userInfo.isVip && userInfo.isOutOfDate)
+const insufficientBalance = ref(!userInfo.isVip && userInfo.balance < 1)
+
+const enableChat = ref((userInfo.isVip && !userInfo.isOutOfDate) || (!userInfo.isVip && userInfo.balance > 0))
+
+function postMsg () {
+    // return post({
+    //     url: '/ask_chatgpt',
+    //     data: { uid, prompt }
+    // })
+    const uid = ''
+    if (loading.value || !prompt.value) return
+
+    chats.push(prompt.value)
+    loading.value = true
+
+    const url = `${import.meta.env.VITE_BASE_URL}/ask?uid=${encodeURIComponent(uid)}&prompt=${encodeURIComponent(prompt.value)}`
+    const eventSource = new EventSource(url)
+
+    eventSource.addEventListener('message', event => {
+        // alert(`Said: ${event.data}`);
+        lastAIchat.value += event.data
+    });
+    eventSource.addEventListener('complete', event => {
+
+        const { data } = event
+        // recharged, balance
+        const { recharged, balance, isOutOfDate } = data
+        if (isOutOfDate === 1) {
+            userInfo.setState({ recharged, balance, endTime: new Date("1980.1.1").valueOf() })
+        } else {
+            userInfo.setState({ recharged, balance })
+        }
+
+
+        chats.push(lastAIchat.value)
+        lastAIchat.value = ''
+        loading.value = false
+        eventSource.close()
+    });
+    eventSource.addEventListener('error', event => {
+        loading.value = false
+        showToast({ message: '出错了，请重试', duration: 500 });
+        eventSource.close()
+    });
+}
+
 
 const showMenu = () => {
     menu.value = true;
@@ -66,10 +125,6 @@ const showMenu = () => {
 
 const upgradeVip = () => {
     showRecharge.value = true
-}
-
-const send = () => {
-
 }
 
 </script>

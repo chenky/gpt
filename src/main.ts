@@ -4,7 +4,7 @@ import { createPinia } from 'pinia'
 import clipboardDirective from './directives/clipboard'
 import App from './App.vue'
 import router from './router'
-
+import 'vant/es/toast/style';
 import './baseImport'
 
 const app = createApp(App)

@@ -15,12 +15,23 @@ export function getUserInfo (uid = '') {
     return get(config)
 }
 
-export function postMsg (uid: string, prompt: string) {
-    return post({
-        url: '/ask_chatgpt',
-        data: { uid, prompt }
-    })
-}
+// export function postMsg (uid: string, prompt: string) {
+//     // return post({
+//     //     url: '/ask_chatgpt',
+//     //     data: { uid, prompt }
+//     // })
+//     const url = `${import.meta.env.VITE_BASE_URL}/ask?uid=${encodeURIComponent(uid)}&prompt=${encodeURIComponent(prompt)}`
+//     const eventSource = new EventSource(url)
+//     eventSource.addEventListener('message', event => {
+//         // alert(`Said: ${event.data}`);
+//     });
+//     eventSource.addEventListener('complete', event => {
+
+//     });
+//     eventSource.addEventListener('error', event => {
+//         // alert(`Said: ${event.data}`);
+//     });
+// }
 
 // 充值成为vip会员
 export function recharge (uid: string, memberType: memberTypeKeys) {
