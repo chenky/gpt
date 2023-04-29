@@ -21,7 +21,8 @@
             </div>
             <div v-if="lastAIchat" class="chat_item chat_ai_item">
                 <icon_aichat class="icon_avatar icon_ai_avatar"></icon_aichat>
-                <div class="chat_text" v-html="lastAIchat"></div>
+                <div :class="{ chat_text: true, waiting: cursor === cCURSOR_STATUS.waiting, typing: cursor === cCURSOR_STATUS.typing }"
+                    v-html="lastAIchat"></div>
                 <!-- <icon_copy class="copy" :msg="lastAIchat"></icon_copy> -->
             </div>
         </div>
@@ -60,7 +61,9 @@ import icon_aichat from '@/assets/icon/icon_aichat.vue'
 import icon_copy from '@/assets/icon/icon_copy.vue'
 import RechargeDialog from '@/components/RechargeDialog.vue'
 import { useUserInfo } from '@/stores/userInfo'
+import { CURSOR_STATUS } from '@/utils/const'
 
+const cCURSOR_STATUS = CURSOR_STATUS
 const userInfo = useUserInfo()
 const menu = ref(false)
 const prompt = ref('')
@@ -70,11 +73,27 @@ const lastAIchat = ref('好点的呀')
 // const lastAIchat = ref('')
 const showRecharge = ref(false)
 const loading = ref(false)
+const cursor = ref(CURSOR_STATUS.normal)
 
 const outOfDate = ref(userInfo.isVip && userInfo.isOutOfDate)
 const insufficientBalance = ref(!userInfo.isVip && userInfo.balance < 1)
 
 const enableChat = ref((userInfo.isVip && !userInfo.isOutOfDate) || (!userInfo.isVip && userInfo.balance > 0))
+
+// test cursor code
+// cursor.value = CURSOR_STATUS.waiting
+// setTimeout(() => {
+//     cursor.value = CURSOR_STATUS.typing
+//     const tid = setInterval(() => {
+//         if (count > 5) {
+//             clearInterval(tid)
+//             cursor.value = CURSOR_STATUS.normal
+//         }
+//         count++;
+//         lastAIchat.value += count;
+//     }, 100)
+// }, 2000);
+// let count = 0;
 
 function postMsg () {
     // return post({
@@ -86,10 +105,14 @@ function postMsg () {
 
     chats.push(prompt.value)
     loading.value = true
+    cursor.value = CURSOR_STATUS.waiting
 
     const url = `${import.meta.env.VITE_BASE_URL}/ask?uid=${encodeURIComponent(uid)}&prompt=${encodeURIComponent(prompt.value)}`
     const eventSource = new EventSource(url)
 
+    eventSource.addEventListener('open', event => {
+        cursor.value = CURSOR_STATUS.typing;
+    })
     eventSource.addEventListener('message', event => {
         // alert(`Said: ${event.data}`);
         lastAIchat.value += event.data
@@ -109,10 +132,12 @@ function postMsg () {
         chats.push(lastAIchat.value)
         lastAIchat.value = ''
         loading.value = false
+        cursor.value = CURSOR_STATUS.normal
         eventSource.close()
     });
     eventSource.addEventListener('error', event => {
         loading.value = false
+        cursor.value = CURSOR_STATUS.normal
         showToast({ message: '出错了，请重试', duration: 500 });
         eventSource.close()
     });
@@ -225,10 +250,34 @@ const upgradeVip = () => {
 .chat_text {
     margin-left: 10px;
     flex: 1;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
-.copy {
-    margin-left: 15px;
+/* 光标字符显示 */
+.typing::after,
+.waiting::after {
+    content: ' ▌';
+    color: var(--subMainColor);
+}
+
+/* 光标闪烁动画 */
+.waiting::after {
+    animation: waiting 1s step-end infinite;
+}
+
+@keyframes waiting {
+    0% {
+        visibility: visible;
+    }
+
+    50% {
+        visibility: hidden;
+    }
+
+    100% {
+        visibility: visible;
+    }
 }
 
 .recharge_tip {

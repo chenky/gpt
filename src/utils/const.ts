@@ -10,6 +10,12 @@ export const VIP_PACK_MAP = {
     "3": "30天首次优惠套餐"
 }
 
+export const CURSOR_STATUS = {
+    typing: "typing",
+    waiting: "waiting",
+    normal: "normal"
+}
+
 export const formatDate = 'YYYY-MM-DD'
 
 export const SUCCESS_CODE = 200
