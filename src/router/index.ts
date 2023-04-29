@@ -13,13 +13,12 @@ const router = createRouter({
             path: '/account',
             name: 'account',
             component: () => import('../views/Account.vue')
+        },
+        {
+            path: '/callback',
+            name: 'callback',
+            component: () => import('../views/Callback.vue')
         }
-        // ,
-        // {
-        //     path: '/recharge_record',
-        //     name: 'recharge_record',
-        //     component: () => import('../views/RechargeRecord.vue')
-        // }
     ]
 })
 

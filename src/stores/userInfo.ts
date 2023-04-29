@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getUserInfo, recharge } from '@/service/index'
+import { getUserInfo, recharge, wxAuth } from '@/service/index'
 import { about2Expire, outOfDate, dateFormatter } from '@/utils/date'
 import { VIP_PACK_MAP } from '@/utils/const'
 import { setStateByStateKey, setStateByDataKey } from '@/utils/common'
@@ -7,6 +7,8 @@ import type { memberTypeKeys, Obj } from '@/types/common'
 
 interface IUserInfo {
     uid: string,
+    nickname: string,
+    headimgurl: string,
     recharged: number,
     memberType: memberTypeKeys,
     balance: number,
@@ -17,6 +19,8 @@ interface IUserInfo {
 export const useUserInfo = defineStore('userInfo', {
     state: (): IUserInfo => ({
         uid: '', // 微信id
+        nickname: '',
+        headimgurl: '',
         recharged: 1, // 0：没有充值过，首次充值，1: 充值过了
         memberType: "0", // 0: 非会员， 1: 套餐一180天会员， 2: 30天会员  3: 30优惠会员
         balance: 9, // -1: 无限畅聊，其他次数就是具体次数 
@@ -46,6 +50,12 @@ export const useUserInfo = defineStore('userInfo', {
     },
 
     actions: {
+        wxAuth (code = '') {
+            return wxAuth(code).then(res => {
+                const { openid, nickname, headimgurl } = res.data
+                this.setState({ openid, nickname, headimgurl })
+            })
+        },
         /**
          * get payment info
          * 获取支付信息

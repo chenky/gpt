@@ -43,7 +43,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
         server: {
             open: true,
             host: '0.0.0.0',
-            port: 5566,
+            port: 80,
             // https: false,
             // hot: true,
             proxy: {

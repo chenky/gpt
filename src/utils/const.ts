@@ -15,3 +15,6 @@ export const formatDate = 'YYYY-MM-DD'
 export const SUCCESS_CODE = 200
 
 export const about2expire_duration = 10 // 10天
+
+// export const APPID = "wxfa1ad7c93b07124c";
+// export const APPID = 

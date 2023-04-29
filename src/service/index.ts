@@ -15,6 +15,13 @@ export function getUserInfo (uid = '') {
     return get(config)
 }
 
+export function wxAuth (code = '') {
+    return get({
+        url: 'wxAuth',
+        params: { code }
+    })
+}
+
 // export function postMsg (uid: string, prompt: string) {
 //     // return post({
 //     //     url: '/ask_chatgpt',
