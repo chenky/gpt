@@ -110,11 +110,18 @@ function postMsg () {
     const url = `${import.meta.env.VITE_BASE_URL}/ask?uid=${encodeURIComponent(uid)}&prompt=${encodeURIComponent(prompt.value)}`
     const eventSource = new EventSource(url)
 
-    eventSource.addEventListener('open', event => {
-        cursor.value = CURSOR_STATUS.typing;
-    })
+    // eventSource.addEventListener('open', event => {
+    //     cursor.value = CURSOR_STATUS.typing;
+    // })
+    let startMessage = false
     eventSource.addEventListener('message', event => {
         // alert(`Said: ${event.data}`);
+
+        if (!startMessage) {
+            cursor.value = CURSOR_STATUS.typing;
+            startMessage = true
+        }
+
         lastAIchat.value += event.data
     });
     eventSource.addEventListener('complete', event => {
