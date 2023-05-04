@@ -1,76 +1,80 @@
 <template>
     <div class="chat">
-        <header>
-            <van-icon name="wap-nav" @click="showMenu" />
-            <van-popup v-model:show="menu" position="left" :style="{ width: '80%', height: '100%' }">
-                <van-cell-group>
-                    <van-cell title="咨询客服" icon="chat-o" is-link to="account" />
-                    <van-cell title="我的主页" icon="user-circle-o" is-link to="account" />
-                </van-cell-group>
-            </van-popup>
-        </header>
-        <!-- <div class="free_tip">有10次免费提问</div> -->
-        <div v-if="enableChat" class="content">
-            <div :class="{ chat_item: true, chat_ai_item: index % 2 !== 0, chat_user_item: index % 2 === 0 }"
-                v-for="(chat, index) in chats">
-                <icon_aichat class="icon_avatar icon_ai_avatar" v-if="index % 2 !== 0"></icon_aichat>
-                <van-image class="icon_avatar icon_user_avatar" v-if="index % 2 === 0"
-                    src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
-                <div class="chat_text" v-html="chat"></div>
-                <icon_copy class="copy" :msg="chat" v-if="index % 2 !== 0"></icon_copy>
+        <van-loading v-if="!hasChat" type="spinner" />
+        <template v-else>
+            <header>
+                <van-icon name="wap-nav" @click="showMenu" />
+                <van-popup v-model:show="menu" position="left" :style="{ width: '80%', height: '100%' }">
+                    <van-cell-group>
+                        <van-cell title="咨询客服" icon="chat-o" is-link to="account" />
+                        <van-cell title="我的主页" icon="user-circle-o" is-link to="account" />
+                    </van-cell-group>
+                </van-popup>
+            </header>
+            <!-- <div class="free_tip">有10次免费提问</div> -->
+            <div v-if="enableChat" class="content">
+                <div :class="{ chat_item: true, chat_ai_item: index % 2 !== 0, chat_user_item: index % 2 === 0 }"
+                    v-for="(chat, index) in chats">
+                    <icon_aichat class="icon_avatar icon_ai_avatar" v-if="index % 2 !== 0"></icon_aichat>
+                    <van-image class="icon_avatar icon_user_avatar" v-if="index % 2 === 0"
+                        src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
+                    <div class="chat_text" v-html="chat"></div>
+                    <icon_copy class="copy" :msg="chat" v-if="index % 2 !== 0"></icon_copy>
+                </div>
+                <div v-if="lastAIchat" class="chat_item chat_ai_item">
+                    <icon_aichat class="icon_avatar icon_ai_avatar"></icon_aichat>
+                    <div :class="{ chat_text: true, waiting: cursor === cCURSOR_STATUS.waiting, typing: cursor === cCURSOR_STATUS.typing }"
+                        v-html="lastAIchat"></div>
+                    <!-- <icon_copy class="copy" :msg="lastAIchat"></icon_copy> -->
+                </div>
             </div>
-            <div v-if="lastAIchat" class="chat_item chat_ai_item">
-                <icon_aichat class="icon_avatar icon_ai_avatar"></icon_aichat>
-                <div :class="{ chat_text: true, waiting: cursor === cCURSOR_STATUS.waiting, typing: cursor === cCURSOR_STATUS.typing }"
-                    v-html="lastAIchat"></div>
-                <!-- <icon_copy class="copy" :msg="lastAIchat"></icon_copy> -->
+            <div v-if="outOfDate" class="recharge_tip">
+                您的套餐已到期，请即刻<van-button type="primary" @click="upgradeVip">充值</van-button>，体验畅聊
             </div>
-        </div>
-        <div v-if="outOfDate" class="recharge_tip">
-            会员套餐已经过期，到期日期为: {{ userInfo.formatEndTime }},单击
-            <van-button type="primary" @click="upgradeVip">续费</van-button>
-        </div>
-        <div v-if="insufficientBalance" class="recharge_tip">
-            10条免费额度已经用完，充值可无限畅聊，点击
-            <van-button type="primary" @click="upgradeVip">升级VIP</van-button>
-        </div>
-        <footer>
-            <div class="msg_input">
-                <van-field v-model="prompt" :disabled="!enableChat" placeholder="请输入..." label="" />
-                <van-button class="send_msg" :loading="loading" :disabled="!enableChat || loading || !prompt"
-                    @click="postMsg">
-                    <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
-                        stroke-linejoin="round" class="h-4 w-4 mr-1" height="1em" width="1em"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
-                </van-button>
+            <div v-if="insufficientBalance" class="recharge_tip">
+                您的聊天次数已用完，请即刻
+                <van-button type="primary" @click="upgradeVip">充值</van-button>，体验畅聊
             </div>
-        </footer>
-        <RechargeDialog v-model:visible="showRecharge"></RechargeDialog>
+            <footer>
+                <div class="msg_input">
+                    <van-field v-model="prompt" :disabled="!enableChat" placeholder="请输入..." label="" />
+                    <van-button class="send_msg" :loading="loading" :disabled="!enableChat || loading || !prompt"
+                        @click="ask">
+                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                            stroke-linejoin="round" class="h-4 w-4 mr-1" height="1em" width="1em"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </van-button>
+                </div>
+            </footer>
+            <RechargeDialog v-model:visible="showRecharge"></RechargeDialog>
+        </template>
     </div>
 </template>
 
 <script setup lang="ts">
 import {
-    ref, reactive
+    ref, reactive, onBeforeMount
 } from 'vue'
 import { showToast } from 'vant';
 import icon_aichat from '@/assets/icon/icon_aichat.vue'
 import icon_copy from '@/assets/icon/icon_copy.vue'
 import RechargeDialog from '@/components/RechargeDialog.vue'
 import { useUserInfo } from '@/stores/userInfo'
+import { useChat } from '@/stores/chat'
 import { CURSOR_STATUS } from '@/utils/const'
 
 const cCURSOR_STATUS = CURSOR_STATUS
 const userInfo = useUserInfo()
+const chat = useChat()
 const menu = ref(false)
 const prompt = ref('')
-const chats = reactive(['股市涨跌了吗', '对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌', '东方财富未来估计是多少呢？不要含糊其辞说套话，给一个具体价格,糊其辞说套话，给一个具体价格,糊其辞说套话，给一个具体价格', '抱歉真的无法预测', '预测一下吗'])
-const lastAIchat = ref('好点的呀')
-// const chats: Array<string> = reactive([])
-// const lastAIchat = ref('')
+// const chats = reactive(['股市涨跌了吗', '对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌', '东方财富未来估计是多少呢？不要含糊其辞说套话，给一个具体价格,糊其辞说套话，给一个具体价格,糊其辞说套话，给一个具体价格', '抱歉真的无法预测', '预测一下吗'])
+// const lastAIchat = ref('好点的呀')
+const chats: Array<string> = reactive([])
+const lastAIchat = ref('')
 const showRecharge = ref(false)
 const loading = ref(false)
 const cursor = ref(CURSOR_STATUS.normal)
@@ -95,20 +99,39 @@ const enableChat = ref((userInfo.isVip && !userInfo.isOutOfDate) || (!userInfo.i
 // }, 2000);
 // let count = 0;
 
-function postMsg () {
+const hasChat = ref(false)
+
+onBeforeMount(() => {
+    // test data
+    const user_id = 'chenky_id'
+    const user_name = 'chenky'
+    chat.createSession({
+        model: 'gpt3.5',
+        // user_name: userInfo.nickname,
+        // user_id: userInfo.uid,
+        user_name,
+        user_id,
+        chat_name: 'first chat'
+    }).then(() => {
+        hasChat.value = true
+    })
+})
+
+function ask () {
     // return post({
     //     url: '/ask_chatgpt',
     //     data: { uid, prompt }
     // })
-    const uid = ''
+    // const uid = ''
     if (loading.value || !prompt.value) return
 
     chats.push(prompt.value)
     loading.value = true
     cursor.value = CURSOR_STATUS.waiting
 
-    const url = `${import.meta.env.VITE_BASE_URL}/ask?uid=${encodeURIComponent(uid)}&prompt=${encodeURIComponent(prompt.value)}`
-    const eventSource = new EventSource(url)
+    const query = `model=${encodeURIComponent("gpt3.5")}&session_id=${encodeURIComponent(chat.session_id)}&question=${encodeURIComponent(prompt.value)}`
+    const url = `${import.meta.env.VITE_BASE_URL}/api/chat/ask_stream/?${query}`
+    const eventSource = new EventSource(url, { withCredentials: true })
 
     // eventSource.addEventListener('open', event => {
     //     cursor.value = CURSOR_STATUS.typing;
@@ -166,6 +189,13 @@ const upgradeVip = () => {
     width: 100%;
     min-height: 100%;
     padding: var(--menuHeight) 0 var(--chatHeight) 0;
+}
+
+.chat:deep(.van-loading) {
+    display: flex;
+    height: calc(100vh - var(--menuHeight) - var(--chatHeight));
+    align-items: center;
+    justify-content: center;
 }
 
 .chat:deep(header),

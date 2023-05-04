@@ -7,7 +7,7 @@
                     <van-cell clickable @click="handleCheck(cVIP_PACK[1])">
                         <template #title>
                             <span class="duration">180天</span>
-                            <span class="price">(¥99)</span>
+                            <span class="price">(¥129)</span>
                         </template>
                         <template #right-icon>
                             <van-radio :name="cVIP_PACK[1]" />
@@ -36,11 +36,9 @@
             </van-radio-group>
             <van-button :loading="loading" type="primary" @click="pay">立即支付</van-button>
             <div class="footer">
-                <h5>充值说明</h5>
-                <p>1. 充值说明充值说明充值说明充值说明充值说明充值说明充值说明</p>
-                <p>2. 充值说明充值说明充值说明充值说明充值说明充值说明充值说明</p>
-                <p>3. 充值说明充值说明充值说明充值说明充值说明充值说明充值说明</p>
-                <p>4. 充值说明充值说明充值说明充值说明充值说明充值说明充值说明</p>
+                <h5>权益说明</h5>
+                <p>1 购买<em>半年套餐</em>的会员，可<em>免费获赠价值499元的全能应用课程</em>1年使用权！帮助您更快地掌握ChatGPT的技巧和应用，提高工作和学习效率。购买后联系客服获取免费课程</p>
+                <p>2 购买体验套餐及月度套餐会员可以享套餐时间内无限畅聊，但无免费课程赠送</p>
             </div>
         </div>
     </van-popup>
@@ -140,5 +138,10 @@ const pay = () => {
 .recharge_dialog .footer p {
     font-size: var(--tinyFontsize);
     color: var(--lightFontColor);
+}
+
+.recharge_dialog .footer p em {
+    font-weight: bold;
+    color: var(--errorBorderColor);
 }
 </style>

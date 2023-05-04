@@ -17,6 +17,7 @@ export const CURSOR_STATUS = {
 }
 
 export const formatDate = 'YYYY-MM-DD'
+export const formatDateTime = 'YYYY-MM-DD hh:mm:ss'
 
 export const SUCCESS_CODE = 200
 

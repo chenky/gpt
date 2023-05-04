@@ -1,4 +1,4 @@
-import type { memberTypeKeys } from '@/types/common';
+import type { CreateSessionReq, memberTypeKeys } from '@/types/common';
 import { get, post } from '@/utils/request'
 import type { AxiosRequestConfigPlus } from 'axios';
 
@@ -22,7 +22,14 @@ export function wxAuth (code = '') {
     })
 }
 
-// export function postMsg (uid: string, prompt: string) {
+export function createSession ({ model = "gpt3.5", user_name, user_id, chat_name = '' }: CreateSessionReq) {
+    return post({
+        url: `/api/chat/create_session/`,
+        data: { model, user_name, user_id, chat_name }
+    })
+}
+
+// export function ask (uid: string, prompt: string) {
 //     // return post({
 //     //     url: '/ask_chatgpt',
 //     //     data: { uid, prompt }

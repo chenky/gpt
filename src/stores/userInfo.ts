@@ -63,14 +63,14 @@ export const useUserInfo = defineStore('userInfo', {
          */
         userInfo (uid: string) {
             return getUserInfo(uid)
-                .then(data => {
-                    setStateByStateKey(this.$state, data)
+                .then(res => {
+                    setStateByStateKey(this.$state, res.data)
                 })
         },
         recharge (memberType: memberTypeKeys) {
-            return recharge(this.uid, memberType).then(data => {
-                setStateByStateKey(this.$state, data)
-                return data
+            return recharge(this.uid, memberType).then(res => {
+                setStateByStateKey(this.$state, res.data)
+                return res
             })
         },
         setState (data: Obj) {
