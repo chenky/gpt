@@ -18,8 +18,8 @@ interface IUserInfo {
 
 export const useUserInfo = defineStore('userInfo', {
     state: (): IUserInfo => ({
-        uid: '', // 微信id
-        nickname: '',
+        uid: 'chenky_id', // 微信id
+        nickname: 'chenky',
         headimgurl: '',
         recharged: 1, // 0：没有充值过，首次充值，1: 充值过了
         memberType: "0", // 0: 非会员， 1: 套餐一180天会员， 2: 30天会员  3: 30优惠会员

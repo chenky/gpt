@@ -15,12 +15,12 @@ interface Res<T = unknown> {
     data: T
 }
 
-interface CreateSessionReq {
-    model: string
-    user_name: string
-    user_id: string
-    chat_name: string
-}
+// interface CreateSessionReq {
+//     model: string
+//     user_name: string
+//     user_id: string
+//     chat_name: string
+// }
 
 
 type memberTypeKeys = keyof typeof VIP_PACK_MAP

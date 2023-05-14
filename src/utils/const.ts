@@ -19,7 +19,8 @@ export const CURSOR_STATUS = {
 export const formatDate = 'YYYY-MM-DD'
 export const formatDateTime = 'YYYY-MM-DD hh:mm:ss'
 
-export const SUCCESS_CODE = 200
+export const SUCCESS_CODE = 100
+export const STATUS_CODE = 200
 
 export const about2expire_duration = 10 // 10天
 

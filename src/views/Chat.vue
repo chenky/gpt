@@ -1,6 +1,6 @@
 <template>
     <div class="chat">
-        <van-loading v-if="!hasChat" type="spinner" />
+        <van-loading v-if="!chatCreating" type="spinner" />
         <template v-else>
             <header>
                 <van-icon name="wap-nav" @click="showMenu" />
@@ -21,8 +21,11 @@
                     <div class="chat_text" v-html="chat"></div>
                     <icon_copy class="copy" :msg="chat" v-if="index % 2 !== 0"></icon_copy>
                 </div>
-                <div v-if="lastAIchat" class="chat_item chat_ai_item">
+                <div v-show="lastAIchat" class="chat_item chat_ai_item">
                     <icon_aichat class="icon_avatar icon_ai_avatar"></icon_aichat>
+                    <!-- <div id="last_aichat_content"
+                        :class="{ chat_text: true, waiting: cursor === cCURSOR_STATUS.waiting, typing: cursor === cCURSOR_STATUS.typing }">
+                    </div> -->
                     <div :class="{ chat_text: true, waiting: cursor === cCURSOR_STATUS.waiting, typing: cursor === cCURSOR_STATUS.typing }"
                         v-html="lastAIchat"></div>
                     <!-- <icon_copy class="copy" :msg="lastAIchat"></icon_copy> -->
@@ -71,8 +74,6 @@ const userInfo = useUserInfo()
 const chat = useChat()
 const menu = ref(false)
 const prompt = ref('')
-// const chats = reactive(['股市涨跌了吗', '对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌,对不起我是ai模型无法预测股市涨跌', '东方财富未来估计是多少呢？不要含糊其辞说套话，给一个具体价格,糊其辞说套话，给一个具体价格,糊其辞说套话，给一个具体价格', '抱歉真的无法预测', '预测一下吗'])
-// const lastAIchat = ref('好点的呀')
 const chats: Array<string> = reactive([])
 const lastAIchat = ref('')
 const showRecharge = ref(false)
@@ -84,36 +85,12 @@ const insufficientBalance = ref(!userInfo.isVip && userInfo.balance < 1)
 
 const enableChat = ref((userInfo.isVip && !userInfo.isOutOfDate) || (!userInfo.isVip && userInfo.balance > 0))
 
-// test cursor code
-// cursor.value = CURSOR_STATUS.waiting
-// setTimeout(() => {
-//     cursor.value = CURSOR_STATUS.typing
-//     const tid = setInterval(() => {
-//         if (count > 5) {
-//             clearInterval(tid)
-//             cursor.value = CURSOR_STATUS.normal
-//         }
-//         count++;
-//         lastAIchat.value += count;
-//     }, 100)
-// }, 2000);
-// let count = 0;
 
-const hasChat = ref(false)
+const chatCreating = ref(false)
 
 onBeforeMount(() => {
-    // test data
-    const user_id = 'chenky_id'
-    const user_name = 'chenky'
-    chat.createSession({
-        model: 'gpt3.5',
-        // user_name: userInfo.nickname,
-        // user_id: userInfo.uid,
-        user_name,
-        user_id,
-        chat_name: 'first chat'
-    }).then(() => {
-        hasChat.value = true
+    chat.createChat({ model: 'gpt-3.5-turbo' }).then(() => {
+        chatCreating.value = true
     })
 })
 
@@ -125,52 +102,83 @@ function ask () {
     // const uid = ''
     if (loading.value || !prompt.value) return
 
+    const last_aichat_content = document.getElementById('last_aichat_content')
+
     chats.push(prompt.value)
+    // prompt.value = ''
     loading.value = true
     cursor.value = CURSOR_STATUS.waiting
 
-    const query = `model=${encodeURIComponent("gpt3.5")}&session_id=${encodeURIComponent(chat.session_id)}&question=${encodeURIComponent(prompt.value)}`
-    const url = `${import.meta.env.VITE_BASE_URL}/api/chat/ask_stream/?${query}`
-    const eventSource = new EventSource(url, { withCredentials: true })
+    // const query = `model=${encodeURIComponent("gpt-3.5-turbo")}&chatConvId=${encodeURIComponent(chat.chatConvId)}&question=${encodeURIComponent(prompt.value)}`
+    // const url = `${import.meta.env.VITE_BASE_URL}/api/chat/ask_stream/?${query}`
+    const query = `userId=${encodeURIComponent(userInfo.uid)}&chatConvId=${encodeURIComponent(chat.chatConvId)}`
+    const url = `${import.meta.env.VITE_BASE_URL}/yundiApp/gpt/createSse?${query}`
+    // const url = `http://43.153.124.180:8080/api/chat/ask_stream/?${query}`
+    const eventSource = new EventSource(url)
 
     // eventSource.addEventListener('open', event => {
     //     cursor.value = CURSOR_STATUS.typing;
     // })
     let startMessage = false
+    // eventSource.addEventListener('open', event => {
+    //     // 问题传给后端，同时发起sse流式数据返回
+    //     // event source api detail, css 选择器优先级
+    //     // chat.postChatQuestion({ model: 'gpt-3.5-turbo', question: prompt.value })
+    // })
     eventSource.addEventListener('message', event => {
         // alert(`Said: ${event.data}`);
+
+        const { lastEventId, data } = event
+        // console.log(event, 'onmessage')
+
+        // 回答完了
+        if (lastEventId == "[DONE]") {
+            chats.push(lastAIchat.value)
+            lastAIchat.value = ''
+            loading.value = false
+            cursor.value = CURSOR_STATUS.normal
+            eventSource.close()
+            return;
+        }
+
+        if (lastEventId == "[TOKENS]") {
+            return;
+        }
 
         if (!startMessage) {
             cursor.value = CURSOR_STATUS.typing;
             startMessage = true
         }
 
-        lastAIchat.value += event.data
-    });
-    eventSource.addEventListener('complete', event => {
-
-        const { data } = event
-        // recharged, balance
-        const { recharged, balance, isOutOfDate } = data
-        if (isOutOfDate === 1) {
-            userInfo.setState({ recharged, balance, endTime: new Date("1980.1.1").valueOf() })
-        } else {
-            userInfo.setState({ recharged, balance })
+        const jsonData = JSON.parse(data)
+        if (jsonData?.content) {
+            lastAIchat.value += jsonData.content
+            last_aichat_content && (last_aichat_content.innerHTML = lastAIchat.value)
         }
 
-
-        chats.push(lastAIchat.value)
-        lastAIchat.value = ''
-        loading.value = false
-        cursor.value = CURSOR_STATUS.normal
-        eventSource.close()
     });
+    // eventSource.addEventListener('complete', event => {
+
+    //     const { data } = event
+    //     // recharged, balance
+    //     const { recharged, balance, isOutOfDate } = data
+    //     if (isOutOfDate === 1) {
+    //         userInfo.setState({ recharged, balance, endTime: new Date("1980.1.1").valueOf() })
+    //     } else {
+    //         userInfo.setState({ recharged, balance })
+    //     }
+    // });
     eventSource.addEventListener('error', event => {
+        // console.log('sse error', event)
         loading.value = false
         cursor.value = CURSOR_STATUS.normal
         showToast({ message: '出错了，请重试', duration: 500 });
         eventSource.close()
     });
+    setTimeout(() => {
+        chat.postChatQuestion({ model: 'gpt-3.5-turbo', question: prompt.value })
+        prompt.value = ''
+    }, 500);
 }
 
 

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import type { AxiosRequestConfigPlus, RawAxiosRequestHeaders } from 'axios';
-import { SUCCESS_CODE } from './const'
+import { SUCCESS_CODE, STATUS_CODE } from './const'
 // import { showFailToast } from 'vant';
 // import 'vant/es/toast/style';
 // import { signature } from './crypto.ts'
@@ -70,6 +70,7 @@ function getAxiosInstance (config: AxiosRequestConfigPlus) {
             //     retConfig.headers.signature = signature(config.data)
             //     // console.log('body is ', config.data, ', signature is ', retConfig.headers.signature?.toString())
             // }
+            // console.log(retConfig, 'request config')
             return retConfig
         },
         error => {
@@ -92,8 +93,8 @@ function getAxiosInstance (config: AxiosRequestConfigPlus) {
             }
 
             const { data, status } = response
-            const { code, transferStatusCode, transferErrorMsg } = data
-            if ((code === SUCCESS_CODE || transferStatusCode === SUCCESS_CODE) && status === SUCCESS_CODE) {
+            const { code } = data
+            if (code === SUCCESS_CODE  && status === STATUS_CODE) {
                 return data
             } else {
                 // 默认不显示统一错误处理

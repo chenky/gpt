@@ -1,4 +1,4 @@
-import type { CreateSessionReq, memberTypeKeys } from '@/types/common';
+import type { memberTypeKeys } from '@/types/common';
 import { get, post } from '@/utils/request'
 import type { AxiosRequestConfigPlus } from 'axios';
 
@@ -22,10 +22,19 @@ export function wxAuth (code = '') {
     })
 }
 
-export function createSession ({ model = "gpt3.5", user_name, user_id, chat_name = '' }: CreateSessionReq) {
+export function createChat({chatName = `chat_${new Date().valueOf()}`, model = "gpt-3.5-turbo", userId = "", userName = ""}){
     return post({
-        url: `/api/chat/create_session/`,
-        data: { model, user_name, user_id, chat_name }
+        url: `/yundiApp/gpt/createConversation`,
+        data: { chatName, model, userId, userName }
+    })
+}
+
+
+
+export function postChatQuestion ({ chatConvId='', model='gpt-3.5-turbo', userId='', question='' }) {
+    return post({
+        url: `/yundiApp/gpt/chat`,
+        data: { chatConvId, model, userId, question }
     })
 }
 

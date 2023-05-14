@@ -50,8 +50,8 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
                 // 开发环境（dev）中解决了跨域问题
                 '/api': {
                     target: mode === 'production' ?
-                        'http://43.153.124.180:8080'
-                        : 'http://43.153.124.180:8080',
+                        'http://39.99.112.134'
+                        : 'http://39.99.112.134',
                     // secure: true, // 如果是https接口，需要配置这个参数
                     changeOrigin: true,
                     rewrite: path => path.replace(/^\/api/, '')
