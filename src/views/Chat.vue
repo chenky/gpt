@@ -61,13 +61,17 @@
 import {
     ref, reactive, onBeforeMount
 } from 'vue'
+import type { Ref } from 'vue'
 import { showToast } from 'vant';
+import { useScroll } from '@/hooks/useScroll'
 import icon_aichat from '@/assets/icon/icon_aichat.vue'
 import icon_copy from '@/assets/icon/icon_copy.vue'
 import RechargeDialog from '@/components/RechargeDialog.vue'
 import { useUserInfo } from '@/stores/userInfo'
 import { useChat } from '@/stores/chat'
 import { CURSOR_STATUS } from '@/utils/const'
+
+const { scrollToBottom, scrollToBottomIfAtBottom } = useScroll(ref(document.documentElement))
 
 const cCURSOR_STATUS = CURSOR_STATUS
 const userInfo = useUserInfo()
@@ -85,8 +89,23 @@ const insufficientBalance = ref(!userInfo.isVip && userInfo.balance < 1)
 
 const enableChat = ref((userInfo.isVip && !userInfo.isOutOfDate) || (!userInfo.isVip && userInfo.balance > 0))
 
+// test cursor code
+// let count = 0;
+// lastAIchat.value = ' '
+// cursor.value = CURSOR_STATUS.waiting
+// setTimeout(() => {
+//     cursor.value = CURSOR_STATUS.typing
+//     const tid = setInterval(() => {
+//         if (count > 50) {
+//             clearInterval(tid)
+//             cursor.value = CURSOR_STATUS.normal
+//         }
+//         count++;
+//         lastAIchat.value += count;
+//     }, 100)
+// }, 2000);
 
-const chatCreating = ref(false)
+const chatCreating = ref(true)
 
 onBeforeMount(() => {
     chat.createChat({ model: 'gpt-3.5-turbo' }).then(() => {
@@ -102,11 +121,12 @@ function ask () {
     // const uid = ''
     if (loading.value || !prompt.value) return
 
-    const last_aichat_content = document.getElementById('last_aichat_content')
+    // const last_aichat_content = document.getElementById('last_aichat_content')
 
     chats.push(prompt.value)
     // prompt.value = ''
     loading.value = true
+    lastAIchat.value = ' '
     cursor.value = CURSOR_STATUS.waiting
 
     // const query = `model=${encodeURIComponent("gpt-3.5-turbo")}&chatConvId=${encodeURIComponent(chat.chatConvId)}&question=${encodeURIComponent(prompt.value)}`
@@ -125,7 +145,7 @@ function ask () {
     //     // event source api detail, css 选择器优先级
     //     // chat.postChatQuestion({ model: 'gpt-3.5-turbo', question: prompt.value })
     // })
-    eventSource.addEventListener('message', event => {
+    eventSource.addEventListener('message', (event) => {
         // alert(`Said: ${event.data}`);
 
         const { lastEventId, data } = event
@@ -133,10 +153,11 @@ function ask () {
 
         // 回答完了
         if (lastEventId == "[DONE]") {
-            chats.push(lastAIchat.value)
-            lastAIchat.value = ''
-            loading.value = false
-            cursor.value = CURSOR_STATUS.normal
+            // chats.push(lastAIchat.value)
+            // lastAIchat.value = ''
+            // clearLastChatMsg()
+            // loading.value = false
+            // cursor.value = CURSOR_STATUS.normal
             eventSource.close()
             return;
         }
@@ -146,14 +167,22 @@ function ask () {
         }
 
         if (!startMessage) {
+            lastAIchat.value = ''
             cursor.value = CURSOR_STATUS.typing;
             startMessage = true
         }
 
         const jsonData = JSON.parse(data)
         if (jsonData?.content) {
-            lastAIchat.value += jsonData.content
-            last_aichat_content && (last_aichat_content.innerHTML = lastAIchat.value)
+            // await nextTick()
+            // lastAIchat.value += jsonData.content
+            // 李白的静夜思
+            // 
+            // Promise.resolve().then(() => {
+            //     lastAIchat.value += jsonData.content
+            // })
+            updateLastChatMsg(lastAIchat, jsonData.content)
+            // last_aichat_content && (last_aichat_content.innerHTML = lastAIchat.value)
         }
 
     });
@@ -181,6 +210,42 @@ function ask () {
     }, 500);
 }
 
+let _lastChatMsgArr: Array<string> = []
+let _lastChatMsgIndex = 0
+const updateLastChatMsg = function (lastAIchat: Ref, msg: string) {
+    if (msg) {
+        _lastChatMsgArr.push(msg);
+        excuteArr(lastAIchat)
+    }
+}
+const excuteArr = (lastAIchat: Ref) => {
+    // 李白的静夜思
+    // 李白三首诗
+    (function (arr, index) {
+        setTimeout(function () {
+            if (index > arr.length - 1) {
+                return
+            }
+            lastAIchat.value += arr[index]
+            scrollToBottom()
+            if (index === arr.length - 1) {
+                chatMsgDone()
+            }
+        }, 100 * index)
+    })(_lastChatMsgArr, _lastChatMsgIndex++);
+}
+const clearLastChatMsg = () => {
+    _lastChatMsgArr = []
+    _lastChatMsgIndex = 0
+}
+
+const chatMsgDone = () => {
+    chats.push(lastAIchat.value)
+    lastAIchat.value = ''
+    clearLastChatMsg()
+    loading.value = false
+    cursor.value = CURSOR_STATUS.normal
+}
 
 const showMenu = () => {
     menu.value = true;
@@ -297,6 +362,7 @@ const upgradeVip = () => {
     flex: 1;
     white-space: pre-wrap;
     word-wrap: break-word;
+    word-break: break-all;
 }
 
 /* 光标字符显示 */
