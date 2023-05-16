@@ -17,7 +17,7 @@ export function getUserInfo (uid = '') {
 
 export function wxAuth (code = '') {
     return get({
-        url: '/notify-user/code',
+        url: '/wx/notify-user/code',
         params: { code }
     })
 }

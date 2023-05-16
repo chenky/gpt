@@ -53,6 +53,7 @@ export const useUserInfo = defineStore('userInfo', {
         wxAuth (code = '') {
             return wxAuth(code).then(res => {
                 const { openid, nickname, headimgurl } = res.data
+                // alert(JSON.stringify(res.data))
                 localStorage.setItem('wxInfo', JSON.stringify({ openid, nickname, headimgurl }))
                 this.setState({ uid: openid, nickname, headimgurl })
             })
