@@ -14,12 +14,12 @@ const APPID = import.meta.env.VITE_APPID
 // console.log('current url', location.href)
 // alert(location.href)
 const qs = queryString.parse(location.search)
-// if (!qs.code && !qs.state) {
-//     // 微信授权
-//     const wxAuthUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${APPID}&redirect_uri=${callbackUrl}&response_type=code&scope=snsapi_userinfo&state=authed#wechat_redirect`
-//     // console.log(callbackUrl, wxAuthUrl, 'aaaaaa')
-//     location.href = wxAuthUrl
-// }
+if (!qs.code && !qs.state && !localStorage.getItem('wxInfo')) {
+    // 微信授权
+    const wxAuthUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${APPID}&redirect_uri=${callbackUrl}&response_type=code&scope=snsapi_userinfo&state=authed#wechat_redirect`
+    // console.log(callbackUrl, wxAuthUrl, 'aaaaaa')
+    location.href = wxAuthUrl
+}
 
 const app = createApp(App)
 

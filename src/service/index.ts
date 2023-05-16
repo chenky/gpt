@@ -17,12 +17,12 @@ export function getUserInfo (uid = '') {
 
 export function wxAuth (code = '') {
     return get({
-        url: 'wxAuth',
+        url: '/notify-user/code',
         params: { code }
     })
 }
 
-export function createChat({chatName = `chat_${new Date().valueOf()}`, model = "gpt-3.5-turbo", userId = "", userName = ""}){
+export function createChat ({ chatName = `chat_${new Date().valueOf()}`, model = "gpt-3.5-turbo", userId = "", userName = "" }) {
     return post({
         url: `/yundiApp/gpt/createConversation`,
         data: { chatName, model, userId, userName }
@@ -31,7 +31,7 @@ export function createChat({chatName = `chat_${new Date().valueOf()}`, model = "
 
 
 
-export function postChatQuestion ({ chatConvId='', model='gpt-3.5-turbo', userId='', question='' }) {
+export function postChatQuestion ({ chatConvId = '', model = 'gpt-3.5-turbo', userId = '', question = '' }) {
     return post({
         url: `/yundiApp/gpt/chat`,
         data: { chatConvId, model, userId, question }

@@ -18,8 +18,8 @@ interface IUserInfo {
 
 export const useUserInfo = defineStore('userInfo', {
     state: (): IUserInfo => ({
-        uid: 'chenky_id', // 微信id
-        nickname: 'chenky',
+        uid: '', // 微信id
+        nickname: '',
         headimgurl: '',
         recharged: 1, // 0：没有充值过，首次充值，1: 充值过了
         memberType: "0", // 0: 非会员， 1: 套餐一180天会员， 2: 30天会员  3: 30优惠会员
@@ -53,7 +53,8 @@ export const useUserInfo = defineStore('userInfo', {
         wxAuth (code = '') {
             return wxAuth(code).then(res => {
                 const { openid, nickname, headimgurl } = res.data
-                this.setState({ openid, nickname, headimgurl })
+                localStorage.setItem('wxInfo', JSON.stringify({ openid, nickname, headimgurl }))
+                this.setState({ uid: openid, nickname, headimgurl })
             })
         },
         /**
